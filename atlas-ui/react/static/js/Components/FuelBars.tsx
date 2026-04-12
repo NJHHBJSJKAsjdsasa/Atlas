@@ -16,7 +16,20 @@ interface Resource {
 }
 
 const FuelBars: React.FC = () => {
-  const [resources, setResources] = useState({ antimatter: 0, element115: 0, deuterium: 0 });
+  const [resources, setResources] = useState({ 
+    antimatter: 0, 
+    element115: 0, 
+    deuterium: 0,
+    quantumAlloy: 0,
+    plasmaCell: 0,
+    neuralCircuit: 0,
+    exoticCrystal: 0,
+    nebulaDust: 0,
+    blackHoleFragment: 0,
+    ancientRelic: 0,
+    alienArtifact: 0,
+    dimensionalShard: 0
+  });
   const [maxStorage, setMaxStorage] = useState(500);
   const [isExpanded, setIsExpanded] = useState(false);
   const [hoveredResource, setHoveredResource] = useState<string | null>(null);
@@ -78,6 +91,78 @@ const FuelBars: React.FC = () => {
       glow: "rgba(251, 146, 60, 0.5)",
       icon: <DeuteriumIcon size={20} color="#ffffff" />,
       gradient: "from-orange-500 via-amber-500 to-yellow-500",
+    },
+    {
+      name: "QUANTUM ALLOY",
+      value: resources.quantumAlloy,
+      color: "green",
+      glow: "rgba(74, 222, 128, 0.5)",
+      icon: <span className="text-2xl">●</span>,
+      gradient: "from-green-600 via-green-500 to-emerald-500",
+    },
+    {
+      name: "PLASMA CELL",
+      value: resources.plasmaCell,
+      color: "red",
+      glow: "rgba(248, 113, 113, 0.5)",
+      icon: <span className="text-2xl">●</span>,
+      gradient: "from-red-600 via-red-500 to-rose-500",
+    },
+    {
+      name: "NEURAL CIRCUIT",
+      value: resources.neuralCircuit,
+      color: "yellow",
+      glow: "rgba(250, 204, 21, 0.5)",
+      icon: <span className="text-2xl">●</span>,
+      gradient: "from-yellow-600 via-yellow-500 to-amber-500",
+    },
+    {
+      name: "EXOTIC CRYSTAL",
+      value: resources.exoticCrystal,
+      color: "pink",
+      glow: "rgba(244, 114, 182, 0.5)",
+      icon: <span className="text-2xl">●</span>,
+      gradient: "from-pink-600 via-pink-500 to-rose-500",
+    },
+    {
+      name: "NEBULA DUST",
+      value: resources.nebulaDust,
+      color: "indigo",
+      glow: "rgba(139, 92, 246, 0.5)",
+      icon: <span className="text-2xl">●</span>,
+      gradient: "from-indigo-600 via-indigo-500 to-violet-500",
+    },
+    {
+      name: "BLACK HOLE FRAGMENT",
+      value: resources.blackHoleFragment,
+      color: "gray",
+      glow: "rgba(156, 163, 175, 0.5)",
+      icon: <span className="text-2xl">●</span>,
+      gradient: "from-gray-600 via-gray-500 to-slate-500",
+    },
+    {
+      name: "ANCIENT RELIC",
+      value: resources.ancientRelic,
+      color: "amber",
+      glow: "rgba(251, 191, 36, 0.5)",
+      icon: <span className="text-2xl">●</span>,
+      gradient: "from-amber-600 via-amber-500 to-yellow-500",
+    },
+    {
+      name: "ALIEN ARTIFACT",
+      value: resources.alienArtifact,
+      color: "blue",
+      glow: "rgba(59, 130, 246, 0.5)",
+      icon: <span className="text-2xl">●</span>,
+      gradient: "from-blue-600 via-blue-500 to-sky-500",
+    },
+    {
+      name: "DIMENSIONAL SHARD",
+      value: resources.dimensionalShard,
+      color: "violet",
+      glow: "rgba(168, 85, 247, 0.5)",
+      icon: <span className="text-2xl">●</span>,
+      gradient: "from-violet-600 via-violet-500 to-purple-500",
     },
   ];
 

@@ -15,7 +15,20 @@ interface ResourceStatusBarProps {
 }
 
 const ResourceStatusBar: React.FC<ResourceStatusBarProps> = ({ currentLocation }) => {
-  const [resources, setResources] = useState({ antimatter: 0, element115: 0, deuterium: 0 });
+  const [resources, setResources] = useState({ 
+    antimatter: 0, 
+    element115: 0, 
+    deuterium: 0,
+    quantumAlloy: 0,
+    plasmaCell: 0,
+    neuralCircuit: 0,
+    exoticCrystal: 0,
+    nebulaDust: 0,
+    blackHoleFragment: 0,
+    ancientRelic: 0,
+    alienArtifact: 0,
+    dimensionalShard: 0
+  });
   const [efficiency, setEfficiency] = useState(1.0);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -68,6 +81,46 @@ const ResourceStatusBar: React.FC<ResourceStatusBarProps> = ({ currentLocation }
               <DeuteriumIcon size={12} color="currentColor" />
               {formatResource(resources.deuterium)} D
             </span>
+            {isExpanded && (
+              <>
+                <span className="text-green-300 flex items-center gap-1">
+                  <span className="text-xs">●</span>
+                  {formatResource(resources.quantumAlloy)} QA
+                </span>
+                <span className="text-red-300 flex items-center gap-1">
+                  <span className="text-xs">●</span>
+                  {formatResource(resources.plasmaCell)} PC
+                </span>
+                <span className="text-yellow-300 flex items-center gap-1">
+                  <span className="text-xs">●</span>
+                  {formatResource(resources.neuralCircuit)} NC
+                </span>
+                <span className="text-pink-300 flex items-center gap-1">
+                  <span className="text-xs">●</span>
+                  {formatResource(resources.exoticCrystal)} EC
+                </span>
+                <span className="text-indigo-300 flex items-center gap-1">
+                  <span className="text-xs">●</span>
+                  {formatResource(resources.nebulaDust)} ND
+                </span>
+                <span className="text-gray-300 flex items-center gap-1">
+                  <span className="text-xs">●</span>
+                  {formatResource(resources.blackHoleFragment)} BHF
+                </span>
+                <span className="text-amber-300 flex items-center gap-1">
+                  <span className="text-xs">●</span>
+                  {formatResource(resources.ancientRelic)} AR
+                </span>
+                <span className="text-blue-300 flex items-center gap-1">
+                  <span className="text-xs">●</span>
+                  {formatResource(resources.alienArtifact)} AA
+                </span>
+                <span className="text-violet-300 flex items-center gap-1">
+                  <span className="text-xs">●</span>
+                  {formatResource(resources.dimensionalShard)} DS
+                </span>
+              </>
+            )}
           </div>
         </div>
 

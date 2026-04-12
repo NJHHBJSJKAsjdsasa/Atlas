@@ -9,6 +9,7 @@ import SpaceshipPanel from "../Components/SpaceshipPanel.tsx";
 import FuelBars from "../Components/FuelBars.tsx";
 import StarfieldWarpReveal from "../Components/StarfieldWarpReveal.tsx";
 import MultiverseBanner from "../Components/MultiverseBanner.jsx";
+import TaskPanel from "../Components/TaskPanel.tsx";
 import { UnifiedSpaceshipStorage } from "../Utils/UnifiedSpaceshipStorage.tsx";
 import { SpaceshipTravelManager } from "../Utils/SpaceshipTravelCosts.tsx";
 import { SpaceshipResourceManager } from "../Utils/SpaceshipResources.tsx";
@@ -453,6 +454,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ error, version }) => {
         </div>
 
         <SpaceshipPanel />
+        <TaskPanel />
       </div>
     </>
   );
