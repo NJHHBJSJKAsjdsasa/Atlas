@@ -5,16 +5,37 @@ import { getItem, setItem, removeItem } from "./b64.tsx";
 
 export interface SpaceshipData {
   r: {
-    a: number;
-    e: number;
-    d: number;
+    // 基础资源
+    a: number; // antimatter
+    e: number; // element115
+    d: number; // deuterium
+    // 中级资源
+    q: number; // quantumAlloy
+    p: number; // plasmaCell
+    n: number; // neuralCircuit
+    // 稀有资源
+    ex: number; // exoticCrystal
+    nd: number; // nebulaDust
+    bh: number; // blackHoleFragment
+    // Artifact资源
+    ar: number; // ancientRelic
+    aa: number; // alienArtifact
+    ds: number; // dimensionalShard
   };
   u: {
-    l: number;
-    ef: number;
-    rn: number;
-    st: number;
-    m: number;
+    l: number; // 等级
+    ef: number; // 效率
+    rn: number; // 范围
+    st: number; // 存储
+    m: number; // 乘数
+    t: string; // 飞船类型
+    mds: any[]; // 模块
+    app: { // 外观
+      c: string; // 颜色
+      p: string; // 图案
+      d: string; // 贴花
+    };
+    sk: { [key: string]: number }; // 技能
   };
   c: { [locationId: string]: number };
   t: {
@@ -24,7 +45,20 @@ export interface SpaceshipData {
   };
   s?: {
     tc?: number;
-    tr?: { a: number; e: number; d: number };
+    tr?: { 
+      a: number; 
+      e: number; 
+      d: number;
+      q: number;
+      p: number;
+      n: number;
+      ex: number;
+      nd: number;
+      bh: number;
+      ar: number;
+      aa: number;
+      ds: number;
+    };
     tt?: number;
     cs?: number;
     dc?: number;
@@ -49,11 +83,31 @@ export class UnifiedSpaceshipStorage {
   };
   private static readonly PASSIVE_INTERVAL = 1 * 60 * 1000;
   private static readonly DEFAULT_DATA: SpaceshipData = {
-    r: { a: 300, e: 200, d: 250 },
-    u: { l: 1, ef: 1.0, rn: 500, st: 1000, m: 1.0 },
+    r: { 
+      a: 300, e: 200, d: 250, // 基础资源
+      q: 0, p: 0, n: 0, // 中级资源
+      ex: 0, nd: 0, bh: 0, // 稀有资源
+      ar: 0, aa: 0, ds: 0 // Artifact资源
+    },
+    u: { 
+      l: 1, ef: 1.0, rn: 500, st: 1000, m: 1.0, // 基础属性
+      t: "explorer", // 默认飞船类型
+      mds: [], // 默认无模块
+      app: { c: "#0070f3", p: "none", d: "none" }, // 默认外观
+      sk: {} // 默认无技能
+    },
     c: {},
     t: {},
-    s: { tc: 0, tr: { a: 0, e: 0, d: 0 }, tt: 0, cs: 0, dc: 0, dcp: 0, dcs: 0, dcg: 0, lcd: new Date().toDateString() },
+    s: { 
+      tc: 0, 
+      tr: { 
+        a: 0, e: 0, d: 0, 
+        q: 0, p: 0, n: 0, 
+        ex: 0, nd: 0, bh: 0, 
+        ar: 0, aa: 0, ds: 0 
+      }, 
+      tt: 0, cs: 0, dc: 0, dcp: 0, dcs: 0, dcg: 0, lcd: new Date().toDateString() 
+    },
   };
   static getData(): SpaceshipData {
     try {
@@ -112,37 +166,118 @@ export class UnifiedSpaceshipStorage {
     data.s = { tc: 0, tr: { a: 0, e: 0, d: 0 }, tt: 0 };
     this.saveData(data);
   }
-  static getResources(): { antimatter: number; element115: number; deuterium: number } {
+  static getResources(): { 
+    antimatter: number; 
+    element115: number; 
+    deuterium: number;
+    quantumAlloy: number;
+    plasmaCell: number;
+    neuralCircuit: number;
+    exoticCrystal: number;
+    nebulaDust: number;
+    blackHoleFragment: number;
+    ancientRelic: number;
+    alienArtifact: number;
+    dimensionalShard: number;
+  } {
     const data = this.getData();
     return {
       antimatter: Math.round(data.r.a),
       element115: Math.round(data.r.e),
       deuterium: Math.round(data.r.d),
+      quantumAlloy: Math.round(data.r.q || 0),
+      plasmaCell: Math.round(data.r.p || 0),
+      neuralCircuit: Math.round(data.r.n || 0),
+      exoticCrystal: Math.round(data.r.ex || 0),
+      nebulaDust: Math.round(data.r.nd || 0),
+      blackHoleFragment: Math.round(data.r.bh || 0),
+      ancientRelic: Math.round(data.r.ar || 0),
+      alienArtifact: Math.round(data.r.aa || 0),
+      dimensionalShard: Math.round(data.r.ds || 0),
     };
   }
 
-  static setResources(resources: { antimatter: number; element115: number; deuterium: number }): void {
+  static setResources(resources: { 
+    antimatter: number; 
+    element115: number; 
+    deuterium: number;
+    quantumAlloy: number;
+    plasmaCell: number;
+    neuralCircuit: number;
+    exoticCrystal: number;
+    nebulaDust: number;
+    blackHoleFragment: number;
+    ancientRelic: number;
+    alienArtifact: number;
+    dimensionalShard: number;
+  }): void {
     const data = this.getData();
     const upgrade = data.u;
     data.r.a = Math.min(Math.max(0, resources.antimatter), upgrade.st);
     data.r.e = Math.min(Math.max(0, resources.element115), upgrade.st);
     data.r.d = Math.min(Math.max(0, resources.deuterium), upgrade.st);
+    data.r.q = Math.min(Math.max(0, resources.quantumAlloy), upgrade.st);
+    data.r.p = Math.min(Math.max(0, resources.plasmaCell), upgrade.st);
+    data.r.n = Math.min(Math.max(0, resources.neuralCircuit), upgrade.st);
+    data.r.ex = Math.min(Math.max(0, resources.exoticCrystal), upgrade.st);
+    data.r.nd = Math.min(Math.max(0, resources.nebulaDust), upgrade.st);
+    data.r.bh = Math.min(Math.max(0, resources.blackHoleFragment), upgrade.st);
+    data.r.ar = Math.min(Math.max(0, resources.ancientRelic), upgrade.st);
+    data.r.aa = Math.min(Math.max(0, resources.alienArtifact), upgrade.st);
+    data.r.ds = Math.min(Math.max(0, resources.dimensionalShard), upgrade.st);
 
     this.saveData(data);
   }
 
-  static addResources(toAdd: { antimatter: number; element115: number; deuterium: number }): void {
+  static addResources(toAdd: { 
+    antimatter: number; 
+    element115: number; 
+    deuterium: number;
+    quantumAlloy: number;
+    plasmaCell: number;
+    neuralCircuit: number;
+    exoticCrystal: number;
+    nebulaDust: number;
+    blackHoleFragment: number;
+    ancientRelic: number;
+    alienArtifact: number;
+    dimensionalShard: number;
+  }): void {
     const data = this.getData();
     const upgrade = data.u;
 
     data.r.a = Math.round(Math.min(data.r.a + toAdd.antimatter, upgrade.st));
     data.r.e = Math.round(Math.min(data.r.e + toAdd.element115, upgrade.st));
     data.r.d = Math.round(Math.min(data.r.d + toAdd.deuterium, upgrade.st));
+    data.r.q = Math.round(Math.min((data.r.q || 0) + toAdd.quantumAlloy, upgrade.st));
+    data.r.p = Math.round(Math.min((data.r.p || 0) + toAdd.plasmaCell, upgrade.st));
+    data.r.n = Math.round(Math.min((data.r.n || 0) + toAdd.neuralCircuit, upgrade.st));
+    data.r.ex = Math.round(Math.min((data.r.ex || 0) + toAdd.exoticCrystal, upgrade.st));
+    data.r.nd = Math.round(Math.min((data.r.nd || 0) + toAdd.nebulaDust, upgrade.st));
+    data.r.bh = Math.round(Math.min((data.r.bh || 0) + toAdd.blackHoleFragment, upgrade.st));
+    data.r.ar = Math.round(Math.min((data.r.ar || 0) + toAdd.ancientRelic, upgrade.st));
+    data.r.aa = Math.round(Math.min((data.r.aa || 0) + toAdd.alienArtifact, upgrade.st));
+    data.r.ds = Math.round(Math.min((data.r.ds || 0) + toAdd.dimensionalShard, upgrade.st));
+    
     if (data.s) {
-      data.s.tr = data.s.tr || { a: 0, e: 0, d: 0 };
+      data.s.tr = data.s.tr || { 
+        a: 0, e: 0, d: 0, 
+        q: 0, p: 0, n: 0, 
+        ex: 0, nd: 0, bh: 0, 
+        ar: 0, aa: 0, ds: 0 
+      };
       data.s.tr.a += toAdd.antimatter;
       data.s.tr.e += toAdd.element115;
       data.s.tr.d += toAdd.deuterium;
+      data.s.tr.q += toAdd.quantumAlloy;
+      data.s.tr.p += toAdd.plasmaCell;
+      data.s.tr.n += toAdd.neuralCircuit;
+      data.s.tr.ex += toAdd.exoticCrystal;
+      data.s.tr.nd += toAdd.nebulaDust;
+      data.s.tr.bh += toAdd.blackHoleFragment;
+      data.s.tr.ar += toAdd.ancientRelic;
+      data.s.tr.aa += toAdd.alienArtifact;
+      data.s.tr.ds += toAdd.dimensionalShard;
     }
 
     this.saveData(data);
@@ -176,6 +311,14 @@ export class UnifiedSpaceshipStorage {
     range: number;
     storage: number;
     multiplier: number;
+    type: string;
+    modules: any[];
+    appearance: {
+      color: string;
+      pattern: string;
+      decal: string;
+    };
+    skills: { [key: string]: number };
   } {
     const data = this.getData();
     return {
@@ -184,6 +327,14 @@ export class UnifiedSpaceshipStorage {
       range: data.u.rn,
       storage: data.u.st,
       multiplier: data.u.m,
+      type: data.u.t || "explorer",
+      modules: data.u.mds || [],
+      appearance: {
+        color: data.u.app?.c || "#0070f3",
+        pattern: data.u.app?.p || "none",
+        decal: data.u.app?.d || "none",
+      },
+      skills: data.u.sk || {},
     };
   }
 
@@ -214,10 +365,20 @@ export class UnifiedSpaceshipStorage {
 
       let multiplier = 1.0 + (data.u.l - 1) * 0.242; // Calculated to reach exactly 25x at level 100
 
+      // 保留飞船类型和定制信息
+      const shipType = data.u.t || "explorer";
+      const modules = data.u.mds || [];
+      const appearance = data.u.app || { c: "#0070f3", p: "none", d: "none" };
+      const skills = data.u.sk || {};
+
       data.u.ef = Math.min(6.0, efficiency); // Higher efficiency cap
       data.u.rn = Math.floor(range);
       data.u.st = Math.floor(storage);
       data.u.m = Math.min(25.0, multiplier); // New 25x multiplier cap
+      data.u.t = shipType;
+      data.u.mds = modules;
+      data.u.app = appearance;
+      data.u.sk = skills;
 
       this.saveData(data);
       return true;
@@ -398,11 +559,29 @@ export class UnifiedSpaceshipStorage {
 
   static getStats(): {
     totalCollections: number;
-    totalResourcesCollected: { antimatter: number; element115: number; deuterium: number };
+    totalResourcesCollected: { 
+      antimatter: number; 
+      element115: number; 
+      deuterium: number;
+      quantumAlloy: number;
+      plasmaCell: number;
+      neuralCircuit: number;
+      exoticCrystal: number;
+      nebulaDust: number;
+      blackHoleFragment: number;
+      ancientRelic: number;
+      alienArtifact: number;
+      dimensionalShard: number;
+    };
     totalTravels: number;
   } {
     const data = this.getData();
-    const rawResources = data.s?.tr || { a: 0, e: 0, d: 0 };
+    const rawResources = data.s?.tr || { 
+      a: 0, e: 0, d: 0, 
+      q: 0, p: 0, n: 0, 
+      ex: 0, nd: 0, bh: 0, 
+      ar: 0, aa: 0, ds: 0 
+    };
 
     return {
       totalCollections: data.s?.tc || 0,
@@ -410,6 +589,15 @@ export class UnifiedSpaceshipStorage {
         antimatter: rawResources.a || 0,
         element115: rawResources.e || 0,
         deuterium: rawResources.d || 0,
+        quantumAlloy: rawResources.q || 0,
+        plasmaCell: rawResources.p || 0,
+        neuralCircuit: rawResources.n || 0,
+        exoticCrystal: rawResources.ex || 0,
+        nebulaDust: rawResources.nd || 0,
+        blackHoleFragment: rawResources.bh || 0,
+        ancientRelic: rawResources.ar || 0,
+        alienArtifact: rawResources.aa || 0,
+        dimensionalShard: rawResources.ds || 0,
       },
       totalTravels: data.s?.tt || 0,
     };
