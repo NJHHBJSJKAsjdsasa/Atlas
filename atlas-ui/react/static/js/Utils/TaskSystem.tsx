@@ -36,8 +36,11 @@ export interface Task {
   completedAt?: number; // 任务完成时间（可选）
 }
 
+type TaskEventListener = (tasks: Task[]) => void;
+
 export class TaskSystem {
   private static readonly STORAGE_KEY = "_atlasTasks";
+  private static listeners: TaskEventListener[] = [];
 
   static initialize(): void {
     const tasks = this.getTasks();
@@ -45,6 +48,19 @@ export class TaskSystem {
       // 初始化默认任务
       this.createDefaultTasks();
     }
+  }
+
+  static addListener(listener: TaskEventListener): void {
+    this.listeners.push(listener);
+  }
+
+  static removeListener(listener: TaskEventListener): void {
+    this.listeners = this.listeners.filter(l => l !== listener);
+  }
+
+  private static notifyListeners(): void {
+    const tasks = this.getTasks();
+    this.listeners.forEach(listener => listener(tasks));
   }
 
   private static createDefaultTasks(): void {
@@ -114,6 +130,7 @@ export class TaskSystem {
   private static saveTasks(tasks: Task[]): void {
     try {
       setItem(this.STORAGE_KEY, JSON.stringify(tasks));
+      this.notifyListeners();
     } catch (error) {
       console.error("Error saving tasks:", error);
     }
@@ -172,6 +189,40 @@ export class TaskSystem {
 
     tasks[taskIndex] = task;
     this.saveTasks(tasks);
+  }
+
+  static incrementProgress(progressKey: string, amount: number = 1): void {
+    const tasks = this.getTasks();
+    let updated = false;
+
+    tasks.forEach((task, index) => {
+      if (task.status === "active" && task.progress.hasOwnProperty(progressKey)) {
+        const currentProgress = task.progress[progressKey];
+        const requirement = task.requirements[progressKey];
+        const newProgress = Math.min(currentProgress + amount, requirement);
+        
+        if (newProgress !== currentProgress) {
+          task.progress[progressKey] = newProgress;
+          
+          // 检查任务是否完成
+          const isCompleted = Object.entries(task.requirements).every(([key, required]) => {
+            return task.progress[key] >= required;
+          });
+
+          if (isCompleted) {
+            task.status = "completed";
+            task.completedAt = Date.now();
+          }
+
+          tasks[index] = task;
+          updated = true;
+        }
+      }
+    });
+
+    if (updated) {
+      this.saveTasks(tasks);
+    }
   }
 
   static completeTask(taskId: string): Task | null {

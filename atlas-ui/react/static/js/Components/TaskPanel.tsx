@@ -15,10 +15,22 @@ const TaskPanel: React.FC<TaskPanelProps> = ({ className = "" }) => {
     // 初始化任务系统
     TaskSystem.initialize();
     updateTasks();
+
+    // 注册事件监听器
+    TaskSystem.addListener(updateTasks);
+
+    // 清理函数
+    return () => {
+      TaskSystem.removeListener(updateTasks);
+    };
   }, []);
 
-  const updateTasks = () => {
-    setTasks(TaskSystem.getTasks());
+  const updateTasks = (newTasks?: Task[]) => {
+    if (newTasks) {
+      setTasks(newTasks);
+    } else {
+      setTasks(TaskSystem.getTasks());
+    }
   };
 
   const completeTask = (taskId: string) => {
