@@ -7,9 +7,39 @@ import DeuteriumIcon from "../Icons/DeuteriumIcon.tsx";
 import Element115Icon from "../Icons/Element115Icon.tsx";
 
 export interface SpaceshipResource {
+  // 基础资源
   antimatter: number;
   element115: number;
   deuterium: number;
+  // 中级资源
+  quantumAlloy: number;
+  plasmaCell: number;
+  neuralCircuit: number;
+  // 稀有资源
+  exoticCrystal: number;
+  nebulaDust: number;
+  blackHoleFragment: number;
+  // Artifact资源
+  ancientRelic: number;
+  alienArtifact: number;
+  dimensionalShard: number;
+}
+
+export type SpaceshipType = "explorer" | "miner" | "combat" | "trader" | "scientist";
+
+export interface SpaceshipModule {
+  id: string;
+  name: string;
+  type: "engine" | "shield" | "scanner" | "storage" | "weapon";
+  level: number;
+  effects: {
+    efficiency?: number;
+    range?: number;
+    storage?: number;
+    shield?: number;
+    scanning?: number;
+    damage?: number;
+  };
 }
 
 export interface SpaceshipUpgrade {
@@ -18,6 +48,19 @@ export interface SpaceshipUpgrade {
   range: number;
   storage: number;
   multiplier: number;
+}
+
+export interface SpaceshipCustomization {
+  type: SpaceshipType;
+  modules: SpaceshipModule[];
+  appearance: {
+    color: string;
+    pattern: string;
+    decal: string;
+  };
+  skills: {
+    [key: string]: number; // 技能名称和等级
+  };
 }
 
 export interface TravelCost {
@@ -55,6 +98,15 @@ export class SpaceshipResourceManager {
       antimatter: toAdd.antimatter || 0,
       element115: toAdd.element115 || 0,
       deuterium: toAdd.deuterium || 0,
+      quantumAlloy: toAdd.quantumAlloy || 0,
+      plasmaCell: toAdd.plasmaCell || 0,
+      neuralCircuit: toAdd.neuralCircuit || 0,
+      exoticCrystal: toAdd.exoticCrystal || 0,
+      nebulaDust: toAdd.nebulaDust || 0,
+      blackHoleFragment: toAdd.blackHoleFragment || 0,
+      ancientRelic: toAdd.ancientRelic || 0,
+      alienArtifact: toAdd.alienArtifact || 0,
+      dimensionalShard: toAdd.dimensionalShard || 0,
     });
   }
 
@@ -350,6 +402,7 @@ export class SpaceshipResourceManager {
     const resources = this.getResources();
 
     return {
+      // 基础资源交换
       antimatter: [
         { from: "antimatter", to: "element115", rate: 1.2, available: resources.antimatter },
         { from: "antimatter", to: "deuterium", rate: 0.8, available: resources.antimatter },
@@ -362,10 +415,49 @@ export class SpaceshipResourceManager {
         { from: "deuterium", to: "antimatter", rate: 1.3, available: resources.deuterium },
         { from: "deuterium", to: "element115", rate: 0.95, available: resources.deuterium },
       ],
+      // 中级资源交换
+      quantumAlloy: [
+        { from: "quantumAlloy", to: "antimatter", rate: 5, available: resources.quantumAlloy },
+        { from: "quantumAlloy", to: "element115", rate: 4, available: resources.quantumAlloy },
+      ],
+      plasmaCell: [
+        { from: "plasmaCell", to: "antimatter", rate: 4, available: resources.plasmaCell },
+        { from: "plasmaCell", to: "deuterium", rate: 6, available: resources.plasmaCell },
+      ],
+      neuralCircuit: [
+        { from: "neuralCircuit", to: "antimatter", rate: 6, available: resources.neuralCircuit },
+        { from: "neuralCircuit", to: "element115", rate: 5, available: resources.neuralCircuit },
+      ],
+      // 稀有资源交换
+      exoticCrystal: [
+        { from: "exoticCrystal", to: "antimatter", rate: 20, available: resources.exoticCrystal },
+        { from: "exoticCrystal", to: "quantumAlloy", rate: 3, available: resources.exoticCrystal },
+      ],
+      nebulaDust: [
+        { from: "nebulaDust", to: "antimatter", rate: 15, available: resources.nebulaDust },
+        { from: "nebulaDust", to: "plasmaCell", rate: 4, available: resources.nebulaDust },
+      ],
+      blackHoleFragment: [
+        { from: "blackHoleFragment", to: "antimatter", rate: 25, available: resources.blackHoleFragment },
+        { from: "blackHoleFragment", to: "neuralCircuit", rate: 3, available: resources.blackHoleFragment },
+      ],
+      // Artifact资源交换
+      ancientRelic: [
+        { from: "ancientRelic", to: "antimatter", rate: 100, available: resources.ancientRelic },
+        { from: "ancientRelic", to: "exoticCrystal", rate: 4, available: resources.ancientRelic },
+      ],
+      alienArtifact: [
+        { from: "alienArtifact", to: "antimatter", rate: 120, available: resources.alienArtifact },
+        { from: "alienArtifact", to: "nebulaDust", rate: 6, available: resources.alienArtifact },
+      ],
+      dimensionalShard: [
+        { from: "dimensionalShard", to: "antimatter", rate: 150, available: resources.dimensionalShard },
+        { from: "dimensionalShard", to: "blackHoleFragment", rate: 5, available: resources.dimensionalShard },
+      ],
     };
   }
 
-  static exchangeResources(fromResource: "antimatter" | "element115" | "deuterium", toResource: "antimatter" | "element115" | "deuterium", amount: number): boolean {
+  static exchangeResources(fromResource: "antimatter" | "element115" | "deuterium" | "quantumAlloy" | "plasmaCell" | "neuralCircuit" | "exoticCrystal" | "nebulaDust" | "blackHoleFragment" | "ancientRelic" | "alienArtifact" | "dimensionalShard", toResource: "antimatter" | "element115" | "deuterium" | "quantumAlloy" | "plasmaCell" | "neuralCircuit" | "exoticCrystal" | "nebulaDust" | "blackHoleFragment" | "ancientRelic" | "alienArtifact" | "dimensionalShard", amount: number): boolean {
     const resources = this.getResources();
     const rates = this.getExchangeRates();
 
@@ -400,9 +492,22 @@ export class SpaceshipResourceManager {
     toast.className += " animate-slideInDown";
 
     const resourceLabels: { [key: string]: { name: string; color: string } } = {
+      // 基础资源
       antimatter: { name: "AM", color: "text-purple-300" },
       element115: { name: "E115", color: "text-cyan-300" },
       deuterium: { name: "D", color: "text-orange-300" },
+      // 中级资源
+      quantumAlloy: { name: "QA", color: "text-green-300" },
+      plasmaCell: { name: "PC", color: "text-red-300" },
+      neuralCircuit: { name: "NC", color: "text-yellow-300" },
+      // 稀有资源
+      exoticCrystal: { name: "EC", color: "text-pink-300" },
+      nebulaDust: { name: "ND", color: "text-indigo-300" },
+      blackHoleFragment: { name: "BHF", color: "text-gray-300" },
+      // Artifact资源
+      ancientRelic: { name: "AR", color: "text-amber-300" },
+      alienArtifact: { name: "AA", color: "text-blue-300" },
+      dimensionalShard: { name: "DS", color: "text-violet-300" },
     };
 
     const fromLabel = resourceLabels[fromResource];
@@ -435,10 +540,38 @@ export class SpaceshipResourceManager {
     arrowSpan.textContent = "→";
 
     const fromRoot = createRoot(fromSpan);
-    const fromIcon = fromResource === "antimatter" ? <AntimatterIcon size={10} color="currentColor" /> : fromResource === "element115" ? <Element115Icon size={10} color="currentColor" /> : <DeuteriumIcon size={10} color="currentColor" />;
+    let fromIcon = null;
+    switch(fromResource) {
+      case "antimatter":
+        fromIcon = <AntimatterIcon size={10} color="currentColor" />;
+        break;
+      case "element115":
+        fromIcon = <Element115Icon size={10} color="currentColor" />;
+        break;
+      case "deuterium":
+        fromIcon = <DeuteriumIcon size={10} color="currentColor" />;
+        break;
+      default:
+        // 为新资源使用默认图标
+        fromIcon = <span className="text-xs">●</span>;
+    }
 
     const toRoot = createRoot(toSpan);
-    const toIcon = toResource === "antimatter" ? <AntimatterIcon size={10} color="currentColor" /> : toResource === "element115" ? <Element115Icon size={10} color="currentColor" /> : <DeuteriumIcon size={10} color="currentColor" />;
+    let toIcon = null;
+    switch(toResource) {
+      case "antimatter":
+        toIcon = <AntimatterIcon size={10} color="currentColor" />;
+        break;
+      case "element115":
+        toIcon = <Element115Icon size={10} color="currentColor" />;
+        break;
+      case "deuterium":
+        toIcon = <DeuteriumIcon size={10} color="currentColor" />;
+        break;
+      default:
+        // 为新资源使用默认图标
+        toIcon = <span className="text-xs">●</span>;
+    }
 
     fromRoot.render(
       <>
