@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { calculatePlanetResources } from "./ElementResourceValues.tsx";
 import { UnifiedSpaceshipStorage } from "./UnifiedSpaceshipStorage.tsx";
 import { ResourceReward } from "./SpaceshipTypes.tsx";
+import { TaskSystem } from "./TaskSystem.tsx";
 import AntimatterIcon from "../Icons/AntimatterIcon.tsx";
 import DeuteriumIcon from "../Icons/DeuteriumIcon.tsx";
 import Element115Icon from "../Icons/Element115Icon.tsx";
@@ -156,6 +157,14 @@ export class SpaceshipResourceCollectionManager {
       };
     }
     UnifiedSpaceshipStorage.addResources(reward);
+
+    // 更新任务进度
+    if (type === "planet") {
+      TaskSystem.incrementProgress("planetsDiscovered", 1);
+      TaskSystem.incrementProgress("antimatterCollected", reward.antimatter);
+    } else if (type === "galaxy") {
+      TaskSystem.incrementProgress("galaxiesVisited", 1);
+    }
 
     return reward;
   }
