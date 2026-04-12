@@ -192,7 +192,7 @@ export const ModularPlanetRenderer = forwardRef<{ captureScreenshot: () => void 
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const planetMeshRef = useRef<THREE.Mesh | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
-  const clockRef = useRef<THREE.Clock>(new THREE.Clock());
+  const clockRef = useRef<THREE.Timer>(new THREE.Timer());
   const frameIdRef = useRef<number | null>(null);
 
   const currentTimeRef = useRef<number>(0);
@@ -535,7 +535,7 @@ export const ModularPlanetRenderer = forwardRef<{ captureScreenshot: () => void 
       renderer.setSize(containerWidth, containerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.shadowMap.type = THREE.PCFShadowMap;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.2;
       renderer.outputColorSpace = THREE.SRGBColorSpace;
