@@ -10,6 +10,7 @@ import SpaceshipPanel from "../Components/SpaceshipPanel.tsx";
 import TreasureChest from "../Components/TreasureChest.tsx";
 import FuelBars from "../Components/FuelBars.tsx";
 import MultiverseBanner from "../Components/MultiverseBanner.jsx";
+import TaskPanel from "../Components/TaskPanel.tsx";
 import { markSystemAsVisited } from "../Utils/VisitHistory.tsx";
 import DidYouKnow from "../Components/DidYouKnow.tsx";
 import GalaxyIcon from "../Icons/GalaxyIcon.tsx";
@@ -145,6 +146,7 @@ const SystemLayout: React.FC<SystemLayoutProps> = ({ system, galaxy, system_url,
             systemIndex: system.index,
           }}
         />
+        <TaskPanel />
         <DidYouKnow currentView="system" />
       </div>
     </>
