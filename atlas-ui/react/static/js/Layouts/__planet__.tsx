@@ -10,6 +10,7 @@ import SpaceshipPanel from "../Components/SpaceshipPanel.tsx";
 import TreasureChest from "../Components/TreasureChest.tsx";
 import FuelBars from "../Components/FuelBars.tsx";
 import MultiverseBanner from "../Components/MultiverseBanner.jsx";
+import TaskPanel from "../Components/TaskPanel.tsx";
 import { markPlanetAsVisited, markSystemAsVisited } from "../Utils/VisitHistory.tsx";
 import { debugConfig } from "../Utils/DebugConfig.tsx";
 import { useAtlasKeySequence } from "../Hooks/useAtlasKeySequence.tsx";
@@ -185,6 +186,7 @@ const PlanetLayout: React.FC<PlanetLayoutProps> = ({ planet, system, galaxy, pla
             planetName: planet.name,
           }}
         />
+        <TaskPanel />
         <DidYouKnow currentView="planet" />
       </div>
     </>

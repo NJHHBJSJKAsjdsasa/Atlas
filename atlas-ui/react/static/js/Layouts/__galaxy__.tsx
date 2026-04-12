@@ -11,6 +11,7 @@ import SpaceshipPanel from "../Components/SpaceshipPanel.tsx";
 import TreasureChest from "../Components/TreasureChest.tsx";
 import FuelBars from "../Components/FuelBars.tsx";
 import MultiverseBanner from "../Components/MultiverseBanner.jsx";
+import TaskPanel from "../Components/TaskPanel.tsx";
 import { markGalaxyAsVisited } from "../Utils/VisitHistory.tsx";
 import DidYouKnow from "../Components/DidYouKnow.tsx";
 import CoordinatesIcon from "../Icons/CoordinatesIcon.tsx";
@@ -123,6 +124,7 @@ const GalaxyLayout: React.FC<GalaxyLayoutProps> = ({ galaxy, systems, galaxy_url
             coordinates: galaxy.coordinates.join(","),
           }}
         />
+        <TaskPanel />
         <DidYouKnow currentView="galaxy" />
       </div>
     </>
