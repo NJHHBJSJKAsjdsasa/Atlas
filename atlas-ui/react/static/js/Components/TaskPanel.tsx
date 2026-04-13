@@ -34,12 +34,18 @@ const TaskPanel: React.FC<TaskPanelProps> = ({ className = "" }) => {
   };
 
   const completeTask = (taskId: string) => {
+    console.log('领取奖励按钮点击，任务ID:', taskId);
     const completedTask = TaskSystem.claimTaskReward(taskId);
+    console.log('claimTaskReward返回:', completedTask);
     if (completedTask) {
+      console.log('领取任务奖励:', completedTask.rewards);
       // 领取任务奖励
       SpaceshipResourceManager.addResources(completedTask.rewards);
       // 标记任务为已领取（可以添加一个新状态，或者保持原样）
       updateTasks();
+      console.log('奖励领取成功');
+    } else {
+      console.log('领取奖励失败：任务不存在或状态不正确');
     }
   };
 
