@@ -3,7 +3,7 @@ import { getItem, setItem } from "./b64.tsx";
 
 export type TaskType = "exploration" | "mining" | "trading" | "combat" | "research";
 
-export type TaskStatus = "active" | "completed" | "failed" | "expired";
+export type TaskStatus = "active" | "completed" | "failed" | "expired" | "claimed";
 
 export interface Task {
   id: string;
@@ -255,7 +255,12 @@ export class TaskSystem {
       return null;
     }
 
-    return tasks[taskIndex];
+    const task = tasks[taskIndex];
+    task.status = "claimed";
+    tasks[taskIndex] = task;
+    this.saveTasks(tasks);
+
+    return task;
   }
 
   static getActiveTasks(): Task[] {
