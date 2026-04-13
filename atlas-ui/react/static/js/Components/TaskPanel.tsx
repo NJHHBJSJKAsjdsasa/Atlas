@@ -34,10 +34,11 @@ const TaskPanel: React.FC<TaskPanelProps> = ({ className = "" }) => {
   };
 
   const completeTask = (taskId: string) => {
-    const completedTask = TaskSystem.completeTask(taskId);
+    const completedTask = TaskSystem.claimTaskReward(taskId);
     if (completedTask) {
       // 领取任务奖励
       SpaceshipResourceManager.addResources(completedTask.rewards);
+      // 标记任务为已领取（可以添加一个新状态，或者保持原样）
       updateTasks();
     }
   };

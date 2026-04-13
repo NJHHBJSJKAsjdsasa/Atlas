@@ -229,11 +229,15 @@ export class TaskSystem {
     const tasks = this.getTasks();
     const taskIndex = tasks.findIndex(task => task.id === taskId);
 
-    if (taskIndex === -1 || tasks[taskIndex].status !== "active") {
+    if (taskIndex === -1) {
       return null;
     }
 
     const task = tasks[taskIndex];
+    if (task.status !== "active") {
+      return null;
+    }
+
     task.status = "completed";
     task.completedAt = Date.now();
 
@@ -241,6 +245,17 @@ export class TaskSystem {
     this.saveTasks(tasks);
 
     return task;
+  }
+
+  static claimTaskReward(taskId: string): Task | null {
+    const tasks = this.getTasks();
+    const taskIndex = tasks.findIndex(task => task.id === taskId);
+
+    if (taskIndex === -1 || tasks[taskIndex].status !== "completed") {
+      return null;
+    }
+
+    return tasks[taskIndex];
   }
 
   static getActiveTasks(): Task[] {
