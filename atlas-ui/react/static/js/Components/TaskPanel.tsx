@@ -66,6 +66,7 @@ const TaskPanel: React.FC<TaskPanelProps> = ({ className = "" }) => {
       case "completed": return "text-blue-400";
       case "failed": return "text-red-400";
       case "expired": return "text-gray-400";
+      case "claimed": return "text-purple-400";
       default: return "text-gray-400";
     }
   };
@@ -125,6 +126,7 @@ const TaskPanel: React.FC<TaskPanelProps> = ({ className = "" }) => {
                           {task.status === "completed" && "已完成"}
                           {task.status === "failed" && "失败"}
                           {task.status === "expired" && "已过期"}
+                          {task.status === "claimed" && "已领取"}
                         </span>
                       </div>
                     </div>
@@ -220,6 +222,11 @@ const TaskPanel: React.FC<TaskPanelProps> = ({ className = "" }) => {
                     >
                       领取奖励
                     </button>
+                  )}
+                  {task.status === "claimed" && (
+                    <div className="mt-3 w-full bg-gray-700 text-gray-300 py-2 rounded text-sm font-medium text-center">
+                      已领取
+                    </div>
                   )}
                 </div>
               );
